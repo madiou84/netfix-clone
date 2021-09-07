@@ -1,16 +1,17 @@
 const path = require('path');
 const express = require('express');
+const serveStatic = require('serve-static');
+
 const app = express();
 
-const publicPath = path.join(__dirname, '.', 'dist');
-const port = process.env.PORT || 3000;
+//here we are configuring dist to serve app files
+app.use('/', serveStatic(path.join(__dirname, '/dist')));
 
-app.use(express.static(publicPath));
-
-app.get('*', (req, res) => {
-   res.sendFile(path.join(publicPath, 'index.html'));
+// this * route is to serve project on different page routes except root `/`
+app.get(/.*/, function (req, res) {
+	res.sendFile(path.join(__dirname, '/dist/index.html'));
 });
 
-app.listen(port, () => {
-   console.log('Server is up!');
-});
+const port = process.env.PORT || 8080;
+app.listen(port);
+console.log(`app is listening on port: ${port}`);
